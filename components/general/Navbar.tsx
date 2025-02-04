@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import Logo from '@/public/logo.png'
 import { Button } from '../ui/button'
+import { ThemeToggle } from './ThemeToggle'
 
 const Navbar = () => {
   return (
@@ -14,11 +15,15 @@ const Navbar = () => {
         </h1>
       </Link>
 
-
+<div>
+    <ThemeToggle />
+    
 <Button>
+    
     Login
 </Button>
 
+</div>
 
 
     </nav>
