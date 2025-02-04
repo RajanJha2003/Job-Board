@@ -1,6 +1,8 @@
 import React, { SVGProps } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
+import { signIn } from '@/app/utils/auth';
+import GeneralSubmitButton from '../general/SubmitButtons';
 
 
 
@@ -57,17 +59,19 @@ const LoginForm = () => {
             </CardHeader>
             <CardContent>
                 <div className='flex flex-col gap-4'>
-                    <form >
-                        <Button  className='w-full ' variant={"outline"}>
-                            <Github className='size-4' />
-                            Login with Github</Button>
+                    <form action={async()=>{
+                      "use server"
+                      await signIn("github",{
+                        redirectTo:"/"
+                      })
+                    }} >
+                      
+                            <GeneralSubmitButton icon={<Github />} width='w-full' variant={"outline"} text='Login With Github' />
                     </form>
                     <form >
-                        <Button  className='w-full ' variant={"outline"}>
-                            <Google className='size-4' />
-                            Login with Google</Button>
+                       
                     </form>
-
+                    <GeneralSubmitButton icon={<Google />} width='w-full' variant={"outline"} text='Login With Google' />
 
                 </div>
             </CardContent>
