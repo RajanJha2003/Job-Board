@@ -1,8 +1,9 @@
 import React, { SVGProps } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
-import { Button } from '../ui/button'
-import { signIn } from '@/app/utils/auth';
+
+import { auth, signIn } from '@/app/utils/auth';
 import GeneralSubmitButton from '../general/SubmitButtons';
+import { redirect } from 'next/navigation';
 
 
 
@@ -49,7 +50,12 @@ const Github = (props: SVGProps<SVGSVGElement>) => (
     </svg>
   );
 
-const LoginForm = () => {
+const LoginForm = async() => {
+  const session=await auth();
+  if(session?.user){
+    return redirect("/")
+
+  }
   return (
     <div className='flex flex-col gap-6 '>
         <Card>
