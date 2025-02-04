@@ -15,7 +15,8 @@ const Navbar = () => {
         </h1>
       </Link>
 
-<div>
+      <div className="hidden md:flex items-center gap-5">
+
     <ThemeToggle />
     
 <Button>
