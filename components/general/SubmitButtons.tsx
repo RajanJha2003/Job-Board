@@ -16,7 +16,7 @@ interface GeneralSubmitButtonProps{
 const GeneralSubmitButton = ({text,variant,width,icon}:GeneralSubmitButtonProps) => {
     const {pending}=useFormStatus();
   return (
-   <Button variant={variant} className={width}>
+   <Button variant={variant} className={width} disabled={pending}>
     {
         pending? (
             <>
