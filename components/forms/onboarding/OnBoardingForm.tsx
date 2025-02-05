@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import Logo from '@/public/logo.png'
 import { Card, CardContent } from '@/components/ui/card'
 import UserTypeSelection from './UserTypeSelection';
+import CompanyForm from './CompanyForm';
 
 type UserSelectionType='company' | 'jobSeeker' | null;
 
@@ -25,7 +26,7 @@ const OnBoardingForm = () => {
                 return <UserTypeSelection onSelect={handleUserTypeSelection} />
             case 2:
                 return userType==="company" ?(
-                    <p>user is company</p>
+                   <CompanyForm />
                 ):(
                   <p>user is job seeker</p>
                 )
