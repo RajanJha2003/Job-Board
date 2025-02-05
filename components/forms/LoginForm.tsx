@@ -74,10 +74,16 @@ const LoginForm = async() => {
                       
                             <GeneralSubmitButton icon={<Github />} width='w-full' variant={"outline"} text='Login With Github' />
                     </form>
-                    <form >
+                    <form action={async()=>{
+                      "use server"
+                      await signIn("google",{
+                        redirectTo:"/"
+                      })
+                    }} >
+                       <GeneralSubmitButton icon={<Google />} width='w-full' variant={"outline"} text='Login With Google' />
                        
                     </form>
-                    <GeneralSubmitButton icon={<Google />} width='w-full' variant={"outline"} text='Login With Google' />
+                   
 
                 </div>
             </CardContent>
