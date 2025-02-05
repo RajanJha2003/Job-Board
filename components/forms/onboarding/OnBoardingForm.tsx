@@ -4,6 +4,7 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import Logo from '@/public/logo.png'
 import { Card, CardContent } from '@/components/ui/card'
+import UserTypeSelection from './UserTypeSelection';
 
 type UserSelectionType='company' | 'jobSeeker' | null;
 
@@ -21,7 +22,7 @@ const OnBoardingForm = () => {
     function renderStep(){
         switch(step){
             case 1:
-                return <p>User type selection form</p>
+                return <UserTypeSelection onSelect={handleUserTypeSelection} />
             case 2:
                 return userType==="company" ?(
                     <p>user is company</p>
