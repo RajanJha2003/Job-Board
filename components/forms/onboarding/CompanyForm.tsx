@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 import { UploadDropzone } from "@/components/general/UploadThingReExport";
 import { Textarea } from "@/components/ui/textarea";
+import { createCompany } from "@/app/actions";
 const CompanyForm = () => {
   const form = useForm<z.infer<typeof companySchema>>({
     resolver: zodResolver(companySchema),
@@ -44,9 +45,23 @@ const CompanyForm = () => {
 
   const [pending, setPending] = useState(false);
 
+  async function onSubmit(values: z.infer<typeof companySchema>) {
+    try {
+      setPending(true);
+      await createCompany(values);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setPending(false);
+    }
+  }
+
   return (
     <Form {...form}>
-      <form  className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)}  className="space-y-6">
         {/* Two column layout for basic info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField

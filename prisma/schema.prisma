@@ -16,6 +16,10 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  userType UserType?
+
+  onboardingCompleted Boolean @default(false)
+
   Company Company?
   JobSeeker JobSeeker?
 
@@ -60,6 +64,11 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+enum UserType {
+  COMPANY
+  JOB_SEEKER
 }
 
 model Company {
