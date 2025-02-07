@@ -1,53 +1,89 @@
 "use client";
 
-import { jobSeekerSchema } from '@/app/utils/zodSchema';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod';
-import PDFImage from '@/public/pdf.png'
-import { Button } from '@/components/ui/button';
-import { XIcon } from 'lucide-react';
-import { UploadDropzone } from '@/components/general/UploadThingReExport';
-import {toast} from 'sonner'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-const JobSeekerForm = () => {
-  const form=useForm<z.infer<typeof jobSeekerSchema>>({
-    resolver:zodResolver(jobSeekerSchema),
-    defaultValues:{
-      about:"",
-      resume:"",
-      name:""
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { XIcon } from "lucide-react";
+
+import PDFImage from "@/public/pdf.png";
+import Image from "next/image";
+import { UploadDropzone } from "@/components/general/UploadThingReExport";
+import { createJobSeeker } from "@/app/actions";
+import { jobSeekerSchema } from "@/app/utils/zodSchema";
+
+export default function JobSeekerForm() {
+  const form = useForm<z.infer<typeof jobSeekerSchema>>({
+    resolver: zodResolver(jobSeekerSchema),
+    defaultValues: {
+      about: "",
+      resume: "",
+      name: "",
+    },
+  });
+  const [pending, setPending] = useState(false);
+  async function onSubmit(values: z.infer<typeof jobSeekerSchema>) {
+    try {
+      setPending(true);
+      await createJobSeeker(values);
+    } catch (error) {
+      if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setPending(false);
     }
-  })
+  }
 
-  const [pending,setPending]=useState(false);
   return (
     <Form {...form}>
-      <form className='space-y-6'>
-        <FormField control={form.control} name='name' render={({field})=>(
-          <FormItem>
-            <FormLabel>Full Name</FormLabel>
-            <FormControl>
-              <Input placeholder='Enter your full name' {...field} />
-            </FormControl>
-          </FormItem>
-        )} />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Full Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your full name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-<FormField control={form.control} name='about' render={({field})=>(
-          <FormItem>
-            <FormLabel>Short Bio</FormLabel>
-            <FormControl>
-              <Textarea placeholder='Tell us about yourself... ' className='resize-none' {...field} />
-            </FormControl>
-          </FormItem>
-        )} />
+        <FormField
+          control={form.control}
+          name="about"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Short Bio</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us about yourself..."
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-<FormField
+        <FormField
           control={form.control}
           name="resume"
           render={({ field }) => (
@@ -79,7 +115,7 @@ const JobSeekerForm = () => {
                       endpoint="resumeUploader"
                       onClientUploadComplete={(res) => {
                         field.onChange(res[0].url);
-                        toast.success("Logo uploaded successfully!");
+                        toast.success("Resume uploaded successfully!");
                       }}
                       onUploadError={() => {
                         toast.error("Something went wrong. Please try again.");
@@ -94,10 +130,10 @@ const JobSeekerForm = () => {
           )}
         />
 
+        <Button type="submit" className="w-full" disabled={pending}>
+          {pending ? "Submitting..." : "Continue"}
+        </Button>
       </form>
-
     </Form>
-  )
+  );
 }
-
-export default JobSeekerForm

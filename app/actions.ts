@@ -1,6 +1,6 @@
 "use server";
 import {z} from 'zod';
-import { companySchema } from './utils/zodSchema';
+import { companySchema, jobSeekerSchema } from './utils/zodSchema';
 import { requireUser } from './utils/hooks';
 import { prisma } from './utils/db';
 import { redirect } from 'next/navigation';
@@ -20,6 +20,32 @@ export async function createCompany(data:z.infer<typeof companySchema>){
             onboardingCompleted:true,
             userType:"COMPANY",
             Company:{
+                create:{
+                    ...validateData
+                }
+            }
+        }
+    })
+
+    return redirect("/")
+}
+
+
+export async function createJobSeeker(data:z.infer<typeof jobSeekerSchema>){
+    const user=await requireUser();
+
+    const validateData=jobSeekerSchema.parse(data);
+
+    console.log(validateData);
+
+    await prisma.user.update({
+        where:{
+            id:user.id
+        },
+        data:{
+            onboardingCompleted:true,
+            userType:"COMPANY",
+            JobSeeker:{
                 create:{
                     ...validateData
                 }
