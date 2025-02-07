@@ -6,6 +6,7 @@ import Logo from '@/public/logo.png'
 import { Card, CardContent } from '@/components/ui/card'
 import UserTypeSelection from './UserTypeSelection';
 import CompanyForm from './CompanyForm';
+import JobSeekerForm from './JobSeekerForm';
 
 type UserSelectionType='company' | 'jobSeeker' | null;
 
@@ -28,7 +29,7 @@ const OnBoardingForm = () => {
                 return userType==="company" ?(
                    <CompanyForm />
                 ):(
-                  <p>user is job seeker</p>
+                 <JobSeekerForm />
                 )
 
             default:
