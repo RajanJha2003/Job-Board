@@ -30,6 +30,7 @@ export const jobSchema = z.object({
     jobDescription: z.string().min(1, "Job description is required"),
     benefits: z.array(z.string()).min(1, "Please select at least one benefit"),
     companyName: z.string().min(1, "Company name is required"),
+    companyAbout:z.string().min(10,"You must provide few details about the company"),
     companyLocation: z.string().min(1, "Company location is required"),
     companyLogo: z.string().min(1, "Company logo is required"),
     companyWebsite: z.string().min(1, "Company website is required"),
