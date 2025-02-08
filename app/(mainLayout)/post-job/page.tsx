@@ -4,6 +4,7 @@ import React from 'react'
 import ArcJetLogo from "@/public/arcjet.jpg";
 import InngestLogo from "@/public/inngest-locale.png";
 import Image from 'next/image';
+import CreateJobForm from '@/components/forms/CreateJobForm';
 
 
 const companies = [
@@ -46,11 +47,7 @@ const companies = [
 const Page = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5">
-      <Card className="lg:col-span-8">
-        <CardHeader>
-          <CardTitle>Hey this is the form</CardTitle>
-        </CardHeader>
-      </Card>
+      <CreateJobForm />
       
       <Card className="lg:col-span-4">
         <CardHeader>
