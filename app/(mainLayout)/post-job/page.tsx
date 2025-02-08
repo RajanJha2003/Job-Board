@@ -85,6 +85,21 @@ const Page = () => {
                 ))
             }
           </div>
+
+          {/* we will render stats here  */}
+          <div className='grid grid-cols-2 gap-4'>
+            {
+                stats.map((stat,index)=>(
+                    <div key={index} className='rounded-lg bg-muted p-4'>
+                        <h4 className='text-2xl font-bold'>{stat.value}</h4>
+                        <p className='text-sm text-muted-foreground'>{stat.label}</p>
+
+
+                    </div>
+                ))
+            }
+
+          </div>
         </CardContent>
       </Card>
     </div>
