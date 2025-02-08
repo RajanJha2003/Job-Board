@@ -20,7 +20,7 @@ model User {
 
   onboardingCompleted Boolean @default(false)
 
-  Company Company?
+  Company   Company?
   JobSeeker JobSeeker?
 
   createdAt DateTime @default(now())
@@ -81,21 +81,17 @@ model Company {
   xAccount String?
   about    String
 
-
-  user User @relation(fields: [userId],references: [id])
+  user   User   @relation(fields: [userId], references: [id])
   userId String @unique
-
-  
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-
-model JobSeeker{
-  id String @id @default(uuid())
-  name String
-  about String
+model JobSeeker {
+  id     String @id @default(uuid())
+  name   String
+  about  String
   resume String
 
   user   User   @relation(fields: [userId], references: [id])
@@ -103,5 +99,4 @@ model JobSeeker{
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 }
