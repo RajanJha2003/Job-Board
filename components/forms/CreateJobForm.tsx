@@ -168,7 +168,7 @@ const CreateJobForm = () => {
               <FormItem>
                 <FormLabel>Benefits</FormLabel>
                 <FormControl>
-                 <BenefitsSelector />
+                 <BenefitsSelector field={field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
