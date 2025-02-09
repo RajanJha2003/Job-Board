@@ -21,18 +21,27 @@ import { toast } from 'sonner';
 import JobListingDurationSelector from '../general/JobListingDurationSelector';
 
 
+interface iAppProps{
+  companyLocation: string;
+    companyName: string;
+    companyAbout: string;
+    companyLogo: string;
+    companyWebsite: string;
+    companyXAccount: string | null;
+} 
 
-const CreateJobForm = () => {
+
+const CreateJobForm = ({companyAbout,companyLocation,companyLogo,companyName,companyWebsite,companyXAccount}:iAppProps) => {
   const form=useForm<z.infer<typeof jobSchema>>({
     resolver:zodResolver(jobSchema),
     defaultValues:{
       benefits:[],
-      companyName:"",
-      companyLocation:"",
-      companyAbout:"",
-      companyLogo:"",
-      companyWebsite:"",
-      companyXAccount:"",
+      companyName:companyName,
+      companyLocation:companyLocation,
+      companyAbout:companyAbout,
+      companyLogo:companyLogo,
+      companyWebsite:companyWebsite,
+      companyXAccount:companyXAccount || "",
       employmentType:"",
       jobDescription:"",
       jobTitle:"",

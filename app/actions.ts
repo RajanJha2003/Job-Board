@@ -1,6 +1,6 @@
 "use server";
 import {z} from 'zod';
-import { companySchema, jobSeekerSchema } from './utils/zodSchema';
+import { companySchema, jobSchema, jobSeekerSchema } from './utils/zodSchema';
 import { requireUser } from './utils/hooks';
 import { prisma } from './utils/db';
 import { redirect } from 'next/navigation';
@@ -84,4 +84,11 @@ export async function createJobSeeker(data:z.infer<typeof jobSeekerSchema>){
     })
 
     return redirect("/")
+}
+
+
+
+export async function createJob(data:z.infer<typeof jobSchema>){
+    const user=await requireUser();
+    
 }
