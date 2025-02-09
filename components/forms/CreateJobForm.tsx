@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { countryList } from '@/app/utils/countriesList';
 import SalaryRangeSelector from '../general/SalaryRangeSelector';
 import JobDescriptionEdior from '../richTextEditor/JobDescriptionEdior';
+import BenefitsSelector from '../general/BenefitsSelector';
 
 
 
@@ -155,12 +156,25 @@ const CreateJobForm = () => {
                 <FormItem>
                   <FormLabel>Job Description</FormLabel>
                   <FormControl>
-                    <JobDescriptionEdior  />
+                    <JobDescriptionEdior field={field as any}  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField control={form.control} name='benefits' 
+            render={({field})=>(
+              <FormItem>
+                <FormLabel>Benefits</FormLabel>
+                <FormControl>
+                 <BenefitsSelector />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+            />
+
       </CardContent>
     </Card>
    </Form>
