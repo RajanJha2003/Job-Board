@@ -37,6 +37,11 @@ const BenefitsSelector = ({field}:BenefitsSelectorProps) => {
                 })
             }
         </div>
+        <div className='mt-4 text-sm text-muted-foreground'>
+            Selected benefits:
+            <span className='text-primary'>{(field.value || []).length}</span>
+
+        </div>
 
     </div>
   )
