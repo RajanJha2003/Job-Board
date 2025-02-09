@@ -172,7 +172,8 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
             ],
           },
           currency:"INR",
-          unit_amount:pricingTier.price ** 100
+          unit_amount: Math.round(pricingTier.price * 100)
+
         },
         quantity:1
       },
