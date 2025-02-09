@@ -19,6 +19,7 @@ import { XIcon } from 'lucide-react';
 import { UploadDropzone } from '../general/UploadThingReExport';
 import { toast } from 'sonner';
 import JobListingDurationSelector from '../general/JobListingDurationSelector';
+import { createJob } from '@/app/actions';
 
 
 interface iAppProps{
@@ -62,7 +63,7 @@ const CreateJobForm = ({companyAbout,companyLocation,companyLogo,companyName,com
     try {
       setPending(true);
 
-      // await createJob(values);
+      await createJob(values);
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
