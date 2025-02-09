@@ -49,7 +49,7 @@ const JobListingDurationSelector = ({field}:JobListingDurationSelectorProps) => 
                   <div className="text-right">
                     <p className="font-bold text-xl">${duration.price}</p>
                     <p className="text-sm text-muted-foreground">
-                      ${(duration.price / duration.days).toFixed(2)}/day
+                    ₹{(duration.price / duration.days).toFixed(2)}/day
                     </p>
                   </div>
                 </div>
