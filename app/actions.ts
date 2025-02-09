@@ -1,136 +1,188 @@
 "use server";
-import {z} from 'zod';
-import { companySchema, jobSchema, jobSeekerSchema } from './utils/zodSchema';
-import { requireUser } from './utils/hooks';
-import { prisma } from './utils/db';
-import { redirect } from 'next/navigation';
-import arcjet, { detectBot, shield } from './utils/arcjet';
-import { request } from '@arcjet/next';
+import { z } from "zod";
+import { companySchema, jobSchema, jobSeekerSchema } from "./utils/zodSchema";
+import { requireUser } from "./utils/hooks";
+import { prisma } from "./utils/db";
+import { redirect } from "next/navigation";
+import arcjet, { detectBot, shield } from "./utils/arcjet";
+import { request } from "@arcjet/next";
+import { stripe } from "./utils/stripe";
+import { jobListingDurationPricing } from "./utils/pricingTiers";
 
-
-const aj=arcjet.withRule(
+const aj = arcjet
+  .withRule(
     shield({
-        mode:'LIVE'
+      mode: "LIVE",
     })
-).withRule(
+  )
+  .withRule(
     detectBot({
-        mode:'LIVE',
-        allow:[]
+      mode: "LIVE",
+      allow: [],
     })
-)
+  );
 
-export async function createCompany(data:z.infer<typeof companySchema>){
-    const user=await requireUser();
+export async function createCompany(data: z.infer<typeof companySchema>) {
+  const user = await requireUser();
 
-    const req=await request();
+  const req = await request();
 
-    const decision=await aj.protect(req);
+  const decision = await aj.protect(req);
 
-    if(decision.isDenied()){
-        throw new Error('Forbidden ')
-    }
+  if (decision.isDenied()) {
+    throw new Error("Forbidden ");
+  }
 
-    const validateData=companySchema.parse(data);
+  const validateData = companySchema.parse(data);
 
-    console.log(validateData);
+  console.log(validateData);
 
-    await prisma.user.update({
-        where:{
-            id:user.id
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      onboardingCompleted: true,
+      userType: "COMPANY",
+      Company: {
+        create: {
+          ...validateData,
         },
-        data:{
-            onboardingCompleted:true,
-            userType:"COMPANY",
-            Company:{
-                create:{
-                    ...validateData
-                }
-            }
-        }
-    })
+      },
+    },
+  });
 
-    return redirect("/")
+  return redirect("/");
 }
 
+export async function createJobSeeker(data: z.infer<typeof jobSeekerSchema>) {
+  const user = await requireUser();
 
-export async function createJobSeeker(data:z.infer<typeof jobSeekerSchema>){
-    const user=await requireUser();
+  const req = await request();
 
-    const req=await request();
+  const decision = await aj.protect(req);
 
-    const decision=await aj.protect(req);
+  if (decision.isDenied()) {
+    throw new Error("Forbidden ");
+  }
 
-    if(decision.isDenied()){
-        throw new Error('Forbidden ')
-    }
+  const validateData = jobSeekerSchema.parse(data);
 
-    const validateData=jobSeekerSchema.parse(data);
+  console.log(validateData);
 
-    console.log(validateData);
-
-    await prisma.user.update({
-        where:{
-            id:user.id
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      onboardingCompleted: true,
+      userType: "COMPANY",
+      JobSeeker: {
+        create: {
+          ...validateData,
         },
-        data:{
-            onboardingCompleted:true,
-            userType:"COMPANY",
-            JobSeeker:{
-                create:{
-                    ...validateData
-                }
-            }
-        }
-    })
+      },
+    },
+  });
 
-    return redirect("/")
+  return redirect("/");
 }
 
+export async function createJob(data: z.infer<typeof jobSchema>) {
+  const user = await requireUser();
+  const req = await request();
+  const decision = await aj.protect(req);
 
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
 
-export async function createJob(data:z.infer<typeof jobSchema>){
-    const user=await requireUser();
-   const req=await request();
-    const decision=await aj.protect(req);
+  const validatedData = jobSchema.parse(data);
 
-    if(decision.isDenied()){
-        throw new Error("Forbidden")
-    }
-
-    const validatedData=jobSchema.parse(data);
-
-    const company=await prisma.company.findUnique({
-        where:{
-            userId:user.id
+  const company = await prisma.company.findUnique({
+    where: {
+      userId: user.id,
+    },
+    select: {
+      id: true,
+      user: {
+        select: {
+          stripeCustomerId: true,
         },
-        select:{
-            id:true,
-            
-        }
-    })
+      },
+    },
+  });
 
-    if (!company?.id) {
-        return redirect("/");
-      }
+  if (!company?.id) {
+    return redirect("/");
+  }
+  let stripeCustomerId = company.user.stripeCustomerId;
 
-    const jobPost=await prisma.jobPost.create({
-             data:{
-                companyId: company.id,
-                jobDescription: validatedData.jobDescription,
-                jobTitle: validatedData.jobTitle,
-                employmentType: validatedData.employmentType,
-                location: validatedData.location,
-                salaryFrom: validatedData.salaryFrom,
-                salaryTo: validatedData.salaryTo,
-                listingDuration: validatedData.listingDuration,
-                benefits: validatedData.benefits,
+  if (!stripeCustomerId) {
+    const customer = await stripe.customers.create({
+      email: user.email as string,
+      name: user.name as string,
+    });
 
-             }
-    })
+    stripeCustomerId = customer.id;
 
+    // update user with stripe customer id
 
-    return redirect("/")
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        stripeCustomerId: customer.id,
+      },
+    });
+  }
+ await prisma.jobPost.create({
+    data: {
+      companyId: company.id,
+      jobDescription: validatedData.jobDescription,
+      jobTitle: validatedData.jobTitle,
+      employmentType: validatedData.employmentType,
+      location: validatedData.location,
+      salaryFrom: validatedData.salaryFrom,
+      salaryTo: validatedData.salaryTo,
+      listingDuration: validatedData.listingDuration,
+      benefits: validatedData.benefits,
+    },
+  });
 
+  const pricingTier = jobListingDurationPricing.find(
+    (tier) => tier.days === validatedData.listingDuration
+  );
 
-    
+  if (!pricingTier) {
+    throw new Error("Invalid listing duration selected");
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    customer: stripeCustomerId,
+    line_items: [
+      {
+        price_data: {
+          product_data: {
+            name: `Job Posting- ${pricingTier.days} Days`,
+            description: pricingTier.description,
+            images: [
+              "https://5ug5dy0htk.ufs.sh/f/BFW3V0hNexz8X30ccRzJDFNU4BXCQYwvZIKp7zS5ytREn2fc",
+            ],
+          },
+          currency:"INR",
+          unit_amount:pricingTier.price ** 100
+        },
+        quantity:1
+      },
+    ],
+
+    mode:'payment',
+    success_url:`${process.env.NEXT_PUBLIC_URL}/payment/success`,
+
+    cancel_url:`${process.env.NEXT_PUBLIC_URL}/payment/cancel`
+  });
+
+  return redirect(session.url as string);
 }
