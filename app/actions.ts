@@ -137,7 +137,7 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
       },
     });
   }
- await prisma.jobPost.create({
+ const jobPost=await prisma.jobPost.create({
     data: {
       companyId: company.id,
       jobDescription: validatedData.jobDescription,
@@ -149,6 +149,9 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
       listingDuration: validatedData.listingDuration,
       benefits: validatedData.benefits,
     },
+    select:{
+      id:true
+    }
   });
 
   const pricingTier = jobListingDurationPricing.find(
@@ -178,6 +181,9 @@ export async function createJob(data: z.infer<typeof jobSchema>) {
         quantity:1
       },
     ],
+    metadata:{
+      jobId:jobPost.id
+    },
 
     mode:'payment',
     success_url:`${process.env.NEXT_PUBLIC_URL}/payment/success`,
