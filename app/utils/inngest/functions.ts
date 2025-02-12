@@ -8,3 +8,19 @@ export const helloWorld = inngest.createFunction(
     return { message: `Hello ${event.data.email}!` };
   },
 );
+
+
+
+
+export const handleJobExpiration=inngest.createFunction(
+    {
+        id:'job-expiration'
+    },
+    {event:'job/created'},
+    async({event,step})=>{
+
+        const {jobId,expirationDays}=event.data;
+        
+
+    }
+)
