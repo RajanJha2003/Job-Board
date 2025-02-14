@@ -5,6 +5,7 @@ import { MapIcon, MapPin, User2 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { formatCurrency } from "@/app/utils/formatCurrency";
+import { formatRelativeTime } from "@/app/utils/formatRelativeTime";
 
 interface iAppProps {
   job: {
@@ -27,7 +28,7 @@ interface iAppProps {
 const JobCard = ({ job }: iAppProps) => {
   return (
     <Link href={"/job"}>
-      <Card>
+      <Card className="hover:shadow-lg transition-all duration-200 hover:border-primary">
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4">
             <Image
@@ -58,14 +59,17 @@ const JobCard = ({ job }: iAppProps) => {
                 <p className="text-sm text-muted-foreground">{formatCurrency(job.salaryFrom)} - {formatCurrency(job.salaryTo)}</p>
               </div>
             </div>
-            <div className="md:ml-auto">
-                <div className="flex items-center gap-2">
+            <div className="md:ml-auto text-right">
+                <div className="flex items-center gap-2 justify-end">
                     <MapPin className="size-4" />
                     <h1>{job.location}</h1>
                 </div>
-                <p>{job.createdAt.toString()}</p>
+                <p className="text-sm text-muted-foreground">{formatRelativeTime(job.createdAt)}</p>
 
             </div>
+          </div>
+          <div>
+            <p className="text-base text-muted-foreground line-clamp-2 !mt-5">{job.company.about}</p>
           </div>
         </CardHeader>
       </Card>
