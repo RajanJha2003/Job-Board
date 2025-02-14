@@ -1,5 +1,6 @@
 import { prisma } from '@/app/utils/db'
 import React from 'react'
+import { EmptyState } from './EmptyState';
 
 async function getData(){
     const data=await prisma.jobPost.findMany({
@@ -46,7 +47,12 @@ const JobListings = async() => {
         }
     </div>
     ):(
-        <p>No jobs found</p>
+        <EmptyState
+          title="No jobs found"
+          description="Try searching for a different job title or location."
+          buttonText="Clear all filters"
+          href="/"
+        />
     )
    }
    </>
