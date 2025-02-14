@@ -1,3 +1,4 @@
+import { prisma } from "../db";
 import { inngest } from "./client";
 
 export const helloWorld = inngest.createFunction(
@@ -20,6 +21,23 @@ export const handleJobExpiration=inngest.createFunction(
     async({event,step})=>{
 
         const {jobId,expirationDays}=event.data;
+
+        await step.sleep('wait-for-expiration',`${expirationDays}d`);
+
+        await step.run('update-job-status',async()=>{
+          await prisma.jobPost.update({
+            where:{
+              id:jobId
+            },
+            data:{
+              status:'EXPIRED'
+            }
+          })
+        })
+
+        return{
+          jobId , message:"Job marked as expired"
+        }
         
 
     }
