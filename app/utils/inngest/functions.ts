@@ -108,6 +108,8 @@ export const sendPeriodicJobListings = inngest.createFunction(
             <div style="margin-top:30px;text-align:center;">
                <a href="${process.env.NEXT_PUBLIC_URL}" style="background-color:#007bff;color:white;padding:10px 20px;text-decoration;none;border-radius:5px">
                View More</a>
+
+               
             
             </div>
             </div>
