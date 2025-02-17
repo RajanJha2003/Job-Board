@@ -118,5 +118,9 @@ export const sendPeriodicJobListings = inngest.createFunction(
         });
       }
     }
+    return {
+      userId,
+      message:"Completed 50 days job listing notification"
+    }
   }
 );

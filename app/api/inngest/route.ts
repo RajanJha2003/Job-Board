@@ -1,5 +1,5 @@
 import { inngest } from "@/app/utils/inngest/client";
-import { handleJobExpiration, helloWorld } from "@/app/utils/inngest/functions";
+import { handleJobExpiration, helloWorld, sendPeriodicJobListings } from "@/app/utils/inngest/functions";
 import { serve } from "inngest/next";
 
 
@@ -9,6 +9,7 @@ export const { GET, POST, PUT } = serve({
   functions: [
     /* your functions will be passed here later! */
     helloWorld,
-    handleJobExpiration
+    handleJobExpiration,
+    sendPeriodicJobListings
   ],
 });
