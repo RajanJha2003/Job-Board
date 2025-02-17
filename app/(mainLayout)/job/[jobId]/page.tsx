@@ -73,6 +73,7 @@ const page = async ({ params }: { params: Params }) => {
         <section>
           <JsonToHtml json={JSON.parse(data.jobDescription)} />
         </section>
+        
       </div>
     </div>
   );
